@@ -30,7 +30,10 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
-    background:var(--ground);
+    background-color:var(--ground);
+    background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMjAnIGhlaWdodD0nMjIwJz4KPGcgb3BhY2l0eT0nMC4zMicgZm9udC1mYW1pbHk9J0FwcGxlIENvbG9yIEVtb2ppLCBTZWdvZSBVSSBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZic+Cjx0ZXh0IHg9JzE0JyB5PSc0OCcgZm9udC1zaXplPSczNCc+8J+MuDwvdGV4dD4KPHRleHQgeD0nMTMwJyB5PSczMCcgZm9udC1zaXplPScyNic+8J+MtzwvdGV4dD4KPHRleHQgeD0nOTAnIHk9JzExMCcgZm9udC1zaXplPSczMCc+8J+MvDwvdGV4dD4KPHRleHQgeD0nMTY1JyB5PScxNDAnIGZvbnQtc2l6ZT0nMjQnPvCfjLg8L3RleHQ+Cjx0ZXh0IHg9JzIwJyB5PScxNzAnIGZvbnQtc2l6ZT0nMjYnPvCfjLc8L3RleHQ+Cjx0ZXh0IHg9JzE4NScgeT0nNjAnIGZvbnQtc2l6ZT0nMjInPvCfjLw8L3RleHQ+CjwvZz4KPC9zdmc+");
+    background-repeat:repeat;
+    background-size:220px 220px;
     color:var(--ink);
     font-family:'Archivo',system-ui,sans-serif;
     font-variation-settings:'wdth' 100;
@@ -51,7 +54,7 @@
   .num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
 
   /* ---------- header ---------- */
-  header{background:var(--petrol);color:var(--ink);padding:22px 0 20px}
+  header{background:var(--petrol) url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMjAnIGhlaWdodD0nMjIwJz4KPGcgb3BhY2l0eT0nMC4zMicgZm9udC1mYW1pbHk9J0FwcGxlIENvbG9yIEVtb2ppLCBTZWdvZSBVSSBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZic+Cjx0ZXh0IHg9JzE0JyB5PSc0OCcgZm9udC1zaXplPSczNCc+8J+MuDwvdGV4dD4KPHRleHQgeD0nMTMwJyB5PSczMCcgZm9udC1zaXplPScyNic+8J+MtzwvdGV4dD4KPHRleHQgeD0nOTAnIHk9JzExMCcgZm9udC1zaXplPSczMCc+8J+MvDwvdGV4dD4KPHRleHQgeD0nMTY1JyB5PScxNDAnIGZvbnQtc2l6ZT0nMjQnPvCfjLg8L3RleHQ+Cjx0ZXh0IHg9JzIwJyB5PScxNzAnIGZvbnQtc2l6ZT0nMjYnPvCfjLc8L3RleHQ+Cjx0ZXh0IHg9JzE4NScgeT0nNjAnIGZvbnQtc2l6ZT0nMjInPvCfjLw8L3RleHQ+CjwvZz4KPC9zdmc+") repeat;background-size:220px 220px;color:var(--ink);padding:22px 0 20px}
   header h1{margin-top:6px;color:var(--ink)}
   header .sub{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);margin-top:7px;letter-spacing:.04em}
   .datepick{
@@ -87,7 +90,7 @@
 
   /* ---------- signature: hold timer ---------- */
   .timer{
-    background:var(--petrol);border-radius:4px;padding:18px 16px 16px;
+    background:var(--petrol) url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMjAnIGhlaWdodD0nMjIwJz4KPGcgb3BhY2l0eT0nMC4zMicgZm9udC1mYW1pbHk9J0FwcGxlIENvbG9yIEVtb2ppLCBTZWdvZSBVSSBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZic+Cjx0ZXh0IHg9JzE0JyB5PSc0OCcgZm9udC1zaXplPSczNCc+8J+MuDwvdGV4dD4KPHRleHQgeD0nMTMwJyB5PSczMCcgZm9udC1zaXplPScyNic+8J+MtzwvdGV4dD4KPHRleHQgeD0nOTAnIHk9JzExMCcgZm9udC1zaXplPSczMCc+8J+MvDwvdGV4dD4KPHRleHQgeD0nMTY1JyB5PScxNDAnIGZvbnQtc2l6ZT0nMjQnPvCfjLg8L3RleHQ+Cjx0ZXh0IHg9JzIwJyB5PScxNzAnIGZvbnQtc2l6ZT0nMjYnPvCfjLc8L3RleHQ+Cjx0ZXh0IHg9JzE4NScgeT0nNjAnIGZvbnQtc2l6ZT0nMjInPvCfjLw8L3RleHQ+CjwvZz4KPC9zdmc+") repeat;background-size:220px 220px;border-radius:4px;padding:18px 16px 16px;
     color:var(--ink);margin-bottom:14px;
   }
   .tgrid{display:flex;align-items:center;gap:18px;margin-top:12px}
@@ -219,7 +222,7 @@
     border-radius:3px;padding:10px;text-align:left;line-height:1.5;
   }
   #gate{
-    position:fixed;inset:0;z-index:100;background:var(--petrol);color:var(--ink);
+    position:fixed;inset:0;z-index:100;background:var(--petrol) url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMjAnIGhlaWdodD0nMjIwJz4KPGcgb3BhY2l0eT0nMC4zMicgZm9udC1mYW1pbHk9J0FwcGxlIENvbG9yIEVtb2ppLCBTZWdvZSBVSSBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZic+Cjx0ZXh0IHg9JzE0JyB5PSc0OCcgZm9udC1zaXplPSczNCc+8J+MuDwvdGV4dD4KPHRleHQgeD0nMTMwJyB5PSczMCcgZm9udC1zaXplPScyNic+8J+MtzwvdGV4dD4KPHRleHQgeD0nOTAnIHk9JzExMCcgZm9udC1zaXplPSczMCc+8J+MvDwvdGV4dD4KPHRleHQgeD0nMTY1JyB5PScxNDAnIGZvbnQtc2l6ZT0nMjQnPvCfjLg8L3RleHQ+Cjx0ZXh0IHg9JzIwJyB5PScxNzAnIGZvbnQtc2l6ZT0nMjYnPvCfjLc8L3RleHQ+Cjx0ZXh0IHg9JzE4NScgeT0nNjAnIGZvbnQtc2l6ZT0nMjInPvCfjLw8L3RleHQ+CjwvZz4KPC9zdmc+") repeat;background-size:220px 220px;color:var(--ink);
     display:none;align-items:center;justify-content:center;padding:26px;
   }
   #gate .inner{max-width:360px;width:100%}
