@@ -17,14 +17,14 @@
 
 <style>
   :root{
-    --ground:#FFF1F5;
+    --ground:#FFF3F7;
     --surface:#FFFFFF;
-    --ink:#3B2430;
-    --petrol:#C2185B;
-    --mineral:#F06292;
-    --signal:#FF3D71;
-    --muted:#B98CA0;
-    --line:#F6D9E3;
+    --ink:#4A2E38;
+    --petrol:#F7C9D8;
+    --mineral:#F3A8C6;
+    --signal:#E0507D;
+    --muted:#B98195;
+    --line:#F6DCE6;
     --pad:18px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -51,13 +51,12 @@
   .num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
 
   /* ---------- header ---------- */
-  header{background:var(--petrol);color:#FFF1F5;padding:22px 0 20px}
-  header .eyebrow{color:#F8BFD6}
-  header h1{margin-top:6px;color:#fff}
-  header .sub{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#FBD3E2;margin-top:7px;letter-spacing:.04em}
+  header{background:var(--petrol);color:var(--ink);padding:22px 0 20px}
+  header h1{margin-top:6px;color:var(--ink)}
+  header .sub{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);margin-top:7px;letter-spacing:.04em}
   .datepick{
-    margin-top:14px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);
-    color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;
+    margin-top:14px;background:var(--surface);border:1px solid rgba(0,0,0,.08);
+    color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:12px;
     padding:7px 10px;border-radius:3px;width:100%;
   }
 
