@@ -1,8 +1,9 @@
 # 12-Week Log
 
 A single-page training and body-composition log for a 12-week calisthenics
-recomposition block. No build step, no framework, no dependencies to install.
-Static HTML on GitHub Pages, Postgres on Supabase.
+recomposition block. No framework, no runtime dependencies — the app logic is
+plain TypeScript compiled to a single script with `tsc`. Static HTML on
+GitHub Pages, Postgres on Supabase.
 
 - **Offline first.** Every entry is written to the browser immediately, so the
   page works in a gym with no signal, then pushes to the database when it can.
@@ -56,7 +57,7 @@ Commit it. Both values are meant to be public — see below.
 ### 5. Turn on GitHub Pages
 
 Settings → Pages → Source → **GitHub Actions**. Push to `main` and the workflow
-in `.github/workflows/deploy.yml` publishes the site.
+in `.github/workflows/static.yml` compiles `src/main.ts` and publishes the site.
 
 Your URL will be `https://alessiapiacitelli.github.io/training-log-repo/`.
 
@@ -98,13 +99,17 @@ lose cross-device sync. Take the JSON backup from the Progress tab periodically.
 ## Layout
 
 ```
-index.html               the whole application
+index.html               markup and styles, loads dist/main.js
+src/main.ts              the whole app, in TypeScript
+dist/main.js             compiled output (built, not committed)
+tsconfig.json            compiler settings
+package.json             the one dev dependency: typescript
 config.js                Supabase URL and anon key
 manifest.webmanifest     home-screen install
 assets/                  icons
 supabase/schema.sql      tables, RLS policies, triggers
 supabase/queries.sql     analysis queries for your own data
-.github/workflows/       Pages deployment
+.github/workflows/       Pages deployment (builds src/main.ts, then publishes)
 ```
 
 ## Data model
@@ -115,11 +120,11 @@ Keeping it schemaless means adding a field to the page needs no migration.
 
 ## Changing the programme
 
-The training plan lives in the `SESS` object near the top of the script in
-`index.html`, keyed by weekday, `0` = Sunday. Each exercise carries a
-prescription per phase via `P(phase1, phase2, phase3)`.
+The training plan lives in the `SESS` object near the top of `src/main.ts`,
+keyed by weekday, `0` = Sunday. Each exercise carries a prescription per phase
+via `P(phase1, phase2, phase3)`.
 
-```js
+```ts
 ['DB front squat', P('4 × 8', '4 × 8 loaded', '4 × 6 loaded')],
 ```
 
@@ -128,11 +133,12 @@ their targets are in `HOLDS`.
 
 ## Local development
 
-No toolchain. Any static server:
-
 ```bash
+npm install
+npm run build     # compiles src/main.ts to dist/main.js
 python3 -m http.server 8000
 ```
 
 Then open `http://localhost:8000`. Username/password sign-in does not need a
-redirect URL.
+redirect URL. Run `npm run watch` instead of `npm run build` while editing
+`src/main.ts` so it recompiles on every save.

@@ -29,6 +29,16 @@ jobs:
             echo "::warning::config.js still has placeholders — deploying in offline-only mode."
           fi
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build TypeScript
+        run: npm run build
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

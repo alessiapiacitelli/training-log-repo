@@ -1,0 +1,13 @@
+{
+  "name": "12-week-log",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Training and body-composition log for a 12-week calisthenics recomposition block.",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
