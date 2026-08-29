@@ -2,6 +2,10 @@
 -- 12-Week Log — database schema
 -- Run once in Supabase: Database > SQL Editor > New query > Run.
 -- Safe to re-run.
+--
+-- Accounts live in auth.users (Supabase Auth). The app collects a
+-- username and password; the password is hashed there, never stored
+-- on these public tables. Turn Confirm email off in Auth settings.
 -- =====================================================================
 
 -- ---------- tables ----------

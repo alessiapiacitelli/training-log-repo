@@ -231,8 +231,10 @@
     width:100%;padding:13px;border-radius:3px;border:1px solid rgba(255,255,255,.25);
     background:rgba(255,255,255,.1);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:14px;
   }
+  #gate input + input{margin-top:8px}
   #gate input::placeholder{color:#7FAAB5}
   #gate .row{display:flex;gap:8px;margin-top:10px}
+  #gate button.full{flex:none;width:100%;margin-top:8px}
   #gate button{
     flex:1;padding:13px;border-radius:3px;border:0;cursor:pointer;
     font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
@@ -257,12 +259,14 @@
   <div class="inner">
     <div class="eyebrow" style="color:#7FAAB5">12-week recomposition</div>
     <h2>Sign in to sync</h2>
-    <p>A one-time link arrives by email. No password. Your log is stored against your account and comes back on any device you sign in from.</p>
-    <input type="email" id="gateEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
+    <p>Pick a username and password. Your log is stored against that account and comes back on any device you sign in from.</p>
+    <input type="text" id="gateUser" placeholder="username" autocomplete="username" autocapitalize="off" spellcheck="false">
+    <input type="password" id="gatePass" placeholder="password" autocomplete="current-password">
     <div class="row">
-      <button id="gateSend">Send link</button>
-      <button class="ghost" id="gateSkip">Use offline</button>
+      <button id="gateIn">Sign in</button>
+      <button id="gateUp">Register</button>
     </div>
+    <button class="ghost full" id="gateSkip">Use offline</button>
     <div id="gateMsg"></div>
   </div>
 </div>
@@ -629,23 +633,80 @@ function stamp(justSaved){
     }[MODE];
   }
   var b=$('btnAuth');
-  if(b)b.textContent=USER?('Sign out '+(USER.email||'')):'Sign in to sync';
+  if(b)b.textContent=USER?('Sign out '+accountName(USER)):'Sign in to sync';
 }
 
-/* --- sign-in gate --- */
+/* --- sign-in gate ---
+   Username/password on the surface. Under the hood this is still
+   Supabase Auth (hashed in auth.users), so RLS on entries/profile
+   keeps working. The username is stored as a synthetic email. */
+function accountEmail(username){
+  return String(username).toLowerCase()+'.traininglog@gmail.com';
+}
+function accountName(user){
+  if(!user)return '';
+  var meta=user.user_metadata||{};
+  if(meta.username)return meta.username;
+  var e=user.email||'';
+  var suf='.traininglog@gmail.com';
+  var cut=e.indexOf(suf);
+  return cut>0?e.slice(0,cut):e;
+}
 function gate(show){
   var g=$('gate');if(!g)return;
   g.style.display=show?'flex':'none';
 }
-async function sendLink(email){
-  if(!SB)return;
+function readGate(){
+  var u=($('gateUser').value||'').trim().toLowerCase();
+  var p=$('gatePass').value||'';
   var m=$('gateMsg');
-  m.textContent='Sending…';
+  if(!/^[a-z0-9_]{3,24}$/.test(u)){
+    m.textContent='Username: 3–24 letters, numbers, or underscore.';
+    return null;
+  }
+  if(p.length<6){
+    m.textContent='Password must be at least 6 characters.';
+    return null;
+  }
+  return {username:u,password:p,email:accountEmail(u)};
+}
+async function signInAccount(){
+  if(!SB)return;
+  var a=readGate();if(!a)return;
+  var m=$('gateMsg');
+  m.textContent='Signing in…';
   try{
-    var r=await SB.auth.signInWithOtp({email:email,options:{emailRedirectTo:window.location.href.split('#')[0]}});
+    var r=await SB.auth.signInWithPassword({email:a.email,password:a.password});
     if(r.error)throw r.error;
-    m.textContent='Link sent. Open it on this device to finish signing in.';
-  }catch(e){ m.textContent='Could not send: '+(e.message||'unknown error'); }
+    m.textContent='';
+  }catch(e){
+    var msg=e.message||'Could not sign in';
+    m.textContent=/invalid login/i.test(msg)?'Wrong username or password.':msg;
+  }
+}
+async function registerAccount(){
+  if(!SB)return;
+  var a=readGate();if(!a)return;
+  var m=$('gateMsg');
+  m.textContent='Creating account…';
+  try{
+    var r=await SB.auth.signUp({
+      email:a.email,
+      password:a.password,
+      options:{data:{username:a.username}}
+    });
+    if(r.error)throw r.error;
+    var ids=r.data&&r.data.user&&r.data.user.identities;
+    if(ids&&!ids.length){
+      m.textContent='That username is taken. Sign in instead.';
+      return;
+    }
+    if(!r.data||!r.data.session){
+      m.textContent='Account created, but email confirmation is still on. In Supabase: Authentication → Providers → Email → turn Confirm email off, then sign in.';
+      return;
+    }
+    m.textContent='';
+  }catch(e){ m.textContent=e.message||'Could not register'; }
 }
 
 /* ---------------- plan data ---------------- */
@@ -954,11 +1015,8 @@ document.addEventListener('click',function(ev){
   }
   if(t.id==='btnReset'){clearInterval(tRun);tRun=null;tSec=0;$('btnGo').textContent='Start';$('prTag').textContent='';paintTimer();return;}
 
-  if(t.id==='gateSend'){
-    var em=$('gateEmail').value.trim();
-    if(!em||em.indexOf('@')<0){$('gateMsg').textContent='Enter a valid email address.';return;}
-    sendLink(em);return;
-  }
+  if(t.id==='gateIn'){signInAccount();return;}
+  if(t.id==='gateUp'){registerAccount();return;}
   if(t.id==='gateSkip'){gate(false);toast('Offline mode — backup regularly');return;}
   if(t.id==='btnAuth'){
     if(!configured()){toast('No database configured — see the README');return;}
@@ -1002,6 +1060,13 @@ document.addEventListener('click',function(ev){
   }
 });
 
+document.addEventListener('keydown',function(ev){
+  if(ev.key!=='Enter')return;
+  if(ev.target&&(ev.target.id==='gateUser'||ev.target.id==='gatePass')){
+    ev.preventDefault();
+    signInAccount();
+  }
+});
 $('holdSel').addEventListener('change',function(){tKey=this.value;tSec=0;clearInterval(tRun);tRun=null;$('btnGo').textContent='Start';$('prTag').textContent='';paintTimer();});
 $('dateIn').addEventListener('change',function(){collect();save();cur=this.value;renderToday();});
 $('startIn').addEventListener('change',function(){DB.start=this.value;save();renderToday();renderProgress();});

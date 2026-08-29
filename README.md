@@ -60,19 +60,23 @@ in `.github/workflows/deploy.yml` publishes the site.
 
 Your URL will be `https://alessiapiacitelli.github.io/training-log-repo/`.
 
-### 6. Point Supabase Auth at that URL
+### 6. Turn off email confirmation
 
-Authentication → URL Configuration:
+Authentication → Providers → Email:
 
-- **Site URL** — your Pages URL
-- **Redirect URLs** — add the same URL
+- Leave the Email provider enabled
+- **Confirm email** — off
 
-Sign-in links will not work until this matches. This is the step people miss.
+The app signs people up with a username and password. There is no inbox in
+that flow, so confirmation must be off or Register will create the account
+and then refuse to sign you in.
 
-### 7. Open it and sign in
+### 7. Open it and register
 
-Enter your email, follow the link, and you are done. Open the same URL on your
-phone, sign in with the same email, and both devices share one log.
+Pick a username (letters, numbers, underscore) and a password of at least six
+characters. Register once, then Sign in on any other device with the same
+pair. The password is stored hashed in Supabase Auth (`auth.users`), not as
+plain text in `entries` or `profile`.
 
 ---
 
@@ -138,5 +142,5 @@ No toolchain. Any static server:
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000`. To let sign-in work locally, add
-`http://localhost:8000` to the Supabase redirect URLs.
+Then open `http://localhost:8000`. Username/password sign-in does not need a
+redirect URL.
