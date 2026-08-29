@@ -58,7 +58,7 @@ Commit it. Both values are meant to be public — see below.
 Settings → Pages → Source → **GitHub Actions**. Push to `main` and the workflow
 in `.github/workflows/deploy.yml` publishes the site.
 
-Your URL will be `https://YOUR_USERNAME.github.io/12-week-log/`.
+Your URL will be `https://alessiapiacitelli.github.io/training-log-repo/`.
 
 ### 6. Point Supabase Auth at that URL
 
