@@ -637,9 +637,8 @@ function stamp(justSaved){
 }
 
 /* --- sign-in gate ---
-   Username/password on the surface. Under the hood this is still
-   Supabase Auth (hashed in auth.users), so RLS on entries/profile
-   keeps working. The username is stored as a synthetic email. */
+   Username/password. Register is a Postgres function (no Auth mailer).
+   Sign-in still uses Auth sessions so RLS on entries/profile works. */
 function accountEmail(username){
   return String(username).toLowerCase()+'.traininglog@gmail.com';
 }
@@ -656,6 +655,16 @@ function gate(show){
   var g=$('gate');if(!g)return;
   g.style.display=show?'flex':'none';
 }
+function authErr(e,fallback){
+  var msg=(e&&e.message)||fallback||'Something went wrong.';
+  if(/could not find the function|schema cache|does not exist/i.test(msg))
+    return 'Run the updated schema.sql in the Supabase SQL editor, then try Register again.';
+  if(/rate limit/i.test(msg)) return 'Too many attempts. Wait a minute and try again.';
+  if(/already|exists|taken|duplicate|unique/i.test(msg)) return 'That username is taken. Sign in instead.';
+  if(/invalid login/i.test(msg)) return 'Wrong username or password.';
+  if(/email/i.test(msg)) return 'Could not complete that. Try again.';
+  return msg;
+}
 function readGate(){
   var u=($('gateUser').value||'').trim().toLowerCase();
   var p=$('gatePass').value||'';
@@ -670,19 +679,16 @@ function readGate(){
   }
   return {username:u,password:p,email:accountEmail(u)};
 }
-async function signInAccount(){
+async function signInAccount(creds){
   if(!SB)return;
-  var a=readGate();if(!a)return;
+  var a=creds||readGate();if(!a)return;
   var m=$('gateMsg');
   m.textContent='Signing in…';
   try{
     var r=await SB.auth.signInWithPassword({email:a.email,password:a.password});
     if(r.error)throw r.error;
     m.textContent='';
-  }catch(e){
-    var msg=e.message||'Could not sign in';
-    m.textContent=/invalid login/i.test(msg)?'Wrong username or password.':msg;
-  }
+  }catch(e){ m.textContent=authErr(e,'Could not sign in.'); }
 }
 async function registerAccount(){
   if(!SB)return;
@@ -690,23 +696,10 @@ async function registerAccount(){
   var m=$('gateMsg');
   m.textContent='Creating account…';
   try{
-    var r=await SB.auth.signUp({
-      email:a.email,
-      password:a.password,
-      options:{data:{username:a.username}}
-    });
+    var r=await SB.rpc('register_account',{p_username:a.username,p_password:a.password});
     if(r.error)throw r.error;
-    var ids=r.data&&r.data.user&&r.data.user.identities;
-    if(ids&&!ids.length){
-      m.textContent='That username is taken. Sign in instead.';
-      return;
-    }
-    if(!r.data||!r.data.session){
-      m.textContent='Account created, but email confirmation is still on. In Supabase: Authentication → Providers → Email → turn Confirm email off, then sign in.';
-      return;
-    }
-    m.textContent='';
-  }catch(e){ m.textContent=e.message||'Could not register'; }
+    await signInAccount(a);
+  }catch(e){ m.textContent=authErr(e,'Could not register.'); }
 }
 
 /* ---------------- plan data ---------------- */

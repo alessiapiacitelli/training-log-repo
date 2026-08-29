@@ -60,18 +60,10 @@ in `.github/workflows/deploy.yml` publishes the site.
 
 Your URL will be `https://alessiapiacitelli.github.io/training-log-repo/`.
 
-### 6. Turn off email confirmation
+### 6. Open it and register
 
-Authentication → Providers → Email:
-
-- Leave the Email provider enabled
-- **Confirm email** — off
-
-The app signs people up with a username and password. There is no inbox in
-that flow, so confirmation must be off or Register will create the account
-and then refuse to sign you in.
-
-### 7. Open it and register
+If the tables already exist, still re-run `schema.sql` once — it adds
+`register_account`, which is what Register calls.
 
 Pick a username (letters, numbers, underscore) and a password of at least six
 characters. Register once, then Sign in on any other device with the same
