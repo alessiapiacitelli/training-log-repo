@@ -10,6 +10,6 @@
    saving to this browser only.
 --------------------------------------------------------------- */
 window.APP_CONFIG = {
-  supabaseUrl:     "PASTE_YOUR_PROJECT_URL",
-  supabaseAnonKey: "PASTE_YOUR_ANON_PUBLIC_KEY"
+  supabaseUrl:     "https://afvgjtfnxmbsymuvskgg.supabase.co",
+  supabaseAnonKey: "sb_publishable_11bEHrS4QA8wez4I_19NlQ_7eV8D7yM"
 };
