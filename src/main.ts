@@ -564,8 +564,8 @@ function drawChart(el: SVGSVGElement, pts: SeriesPoint[], avg: SeriesPoint[] | n
 /* ---------------- progress ---------------- */
 function renderProgress(): void {
   var wt = series("weight"), wa = series("waist");
-  drawChart($<SVGSVGElement>("cWeight"), wt, roll(wt, 7), "#F06292");
-  drawChart($<SVGSVGElement>("cWaist"), wa, roll(wa, 3), "#C2185B");
+  drawChart($<SVGSVGElement>("cWeight"), wt, roll(wt, 7), "#D6437A");
+  drawChart($<SVGSVGElement>("cWaist"), wa, roll(wa, 3), "#8C4A63");
 
   var keys = Object.keys(DB.logs).sort();
   var last7 = keys.slice(-7);

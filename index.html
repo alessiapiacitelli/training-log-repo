@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>12-Week Log</title>
-<meta name="theme-color" content="#C2185B">
+<meta name="theme-color" content="#F7C9D8">
 <meta name="description" content="Training and body-composition log for a 12-week calisthenics recomposition block.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
@@ -88,14 +88,13 @@
   /* ---------- signature: hold timer ---------- */
   .timer{
     background:var(--petrol);border-radius:4px;padding:18px 16px 16px;
-    color:#fff;margin-bottom:14px;
+    color:var(--ink);margin-bottom:14px;
   }
-  .timer .eyebrow{color:#F8BFD6}
   .tgrid{display:flex;align-items:center;gap:18px;margin-top:12px}
   .dial{position:relative;width:118px;height:118px;flex:none}
   .dial svg{transform:rotate(-90deg);display:block}
-  .dial .ring{fill:none;stroke:rgba(255,255,255,.15);stroke-width:7}
-  .dial .fill{fill:none;stroke:var(--mineral);stroke-width:7;stroke-linecap:round;
+  .dial .ring{fill:none;stroke:rgba(0,0,0,.1);stroke-width:7}
+  .dial .fill{fill:none;stroke:#D6437A;stroke-width:7;stroke-linecap:round;
     transition:stroke-dasharray .3s linear,stroke .3s}
   .dial.pr .fill{stroke:var(--signal)}
   .dialtxt{
@@ -103,24 +102,24 @@
     align-items:center;justify-content:center;
   }
   .dialtxt b{font-family:'IBM Plex Mono',monospace;font-size:25px;font-weight:500;letter-spacing:-.02em}
-  .dialtxt span{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#FBD3E2;letter-spacing:.08em;margin-top:2px}
+  .dialtxt span{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--muted);letter-spacing:.08em;margin-top:2px}
   .tside{flex:1;min-width:0}
   .tside select{
-    width:100%;background:rgba(255,255,255,.09);color:#fff;border:1px solid rgba(255,255,255,.2);
+    width:100%;background:var(--surface);color:var(--ink);border:1px solid rgba(0,0,0,.08);
     border-radius:3px;padding:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;
   }
   .tbtns{display:flex;gap:7px;margin-top:9px}
   .tbtns button{
     flex:1;padding:9px 0;border-radius:3px;cursor:pointer;
     font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-    border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#fff;
+    border:1px solid rgba(0,0,0,.1);background:var(--surface);color:var(--ink);
   }
-  .tbtns button.go{background:var(--mineral);border-color:var(--mineral)}
+  .tbtns button.go{background:#D6437A;border-color:#D6437A;color:#fff}
   .prtag{
     margin-top:9px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;
     letter-spacing:.1em;text-transform:uppercase;color:var(--signal);min-height:14px;
   }
-  .best{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#FBD3E2;margin-top:8px;letter-spacing:.05em}
+  .best{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);margin-top:8px;letter-spacing:.05em}
 
   /* ---------- exercise rows ---------- */
   .ex{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
@@ -154,14 +153,14 @@
     flex:1;padding:9px 0;border:1px solid var(--line);background:var(--ground);border-radius:3px;
     font-family:'IBM Plex Mono',monospace;font-size:13px;cursor:pointer;color:var(--muted);
   }
-  .energy button[aria-pressed="true"]{background:var(--petrol);color:#fff;border-color:var(--petrol)}
+  .energy button[aria-pressed="true"]{background:var(--petrol);color:var(--ink);border-color:var(--petrol)}
 
   .save{
     width:100%;padding:15px;background:var(--ink);color:#fff;border:0;border-radius:4px;
     font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
     cursor:pointer;margin-top:4px;
   }
-  .save.ok{background:var(--mineral)}
+  .save.ok{background:#D6437A}
   .save:focus-visible,.energy button:focus-visible,.tbtns button:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
 
   /* ---------- progress ---------- */
@@ -214,32 +213,32 @@
     font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;
     text-align:center;margin-top:10px;color:var(--muted);
   }
-  .stamp.ok{color:var(--mineral)}
+  .stamp.ok{color:#D6437A}
   .stamp.bad{
-    color:#8A4A0C;background:#FBEEDF;border:1px solid var(--signal);
+    color:#8A4A0C;background:#FBEEDF;border:1px solid #D97706;
     border-radius:3px;padding:10px;text-align:left;line-height:1.5;
   }
   #gate{
-    position:fixed;inset:0;z-index:100;background:var(--petrol);color:#fff;
+    position:fixed;inset:0;z-index:100;background:var(--petrol);color:var(--ink);
     display:none;align-items:center;justify-content:center;padding:26px;
   }
   #gate .inner{max-width:360px;width:100%}
-  #gate h2{font-size:22px;color:#fff;text-transform:none;letter-spacing:-.01em;margin-bottom:9px}
-  #gate p{font-size:13.5px;color:#FBD3E2;line-height:1.55;margin:0 0 18px}
+  #gate h2{font-size:22px;color:var(--ink);text-transform:none;letter-spacing:-.01em;margin-bottom:9px}
+  #gate p{font-size:13.5px;color:var(--muted);line-height:1.55;margin:0 0 18px}
   #gate input{
-    width:100%;padding:13px;border-radius:3px;border:1px solid rgba(255,255,255,.25);
-    background:rgba(255,255,255,.1);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:14px;
+    width:100%;padding:13px;border-radius:3px;border:1px solid rgba(0,0,0,.1);
+    background:var(--surface);color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:14px;
   }
   #gate input + input{margin-top:8px}
-  #gate input::placeholder{color:#F8BFD6}
+  #gate input::placeholder{color:var(--muted)}
   #gate .row{display:flex;gap:8px;margin-top:10px}
   #gate button.full{flex:none;width:100%;margin-top:8px}
   #gate button{
     flex:1;padding:13px;border-radius:3px;border:0;cursor:pointer;
     font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
-    background:var(--mineral);color:#fff;
+    background:#D6437A;color:#fff;
   }
-  #gate button.ghost{background:transparent;border:1px solid rgba(255,255,255,.3);color:#FBD3E2}
+  #gate button.ghost{background:transparent;border:1px solid rgba(0,0,0,.15);color:var(--muted)}
   #gateMsg{
     font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--signal);
     margin-top:13px;min-height:16px;line-height:1.5;
@@ -256,7 +255,7 @@
 
 <div id="gate">
   <div class="inner">
-    <div class="eyebrow" style="color:#F8BFD6">12-week recomposition</div>
+    <div class="eyebrow">12-week recomposition</div>
     <h2>Sign in to sync</h2>
     <p>Pick a username and password. Your log is stored against that account and comes back on any device you sign in from.</p>
     <input type="text" id="gateUser" placeholder="username" autocomplete="username" autocapitalize="off" spellcheck="false">
@@ -366,7 +365,7 @@
     <div class="note" id="storeWhere">Checking where this page can store data…</div>
     <div class="tbtns" style="margin-top:12px">
       <button class="save" id="btnBackup" style="margin:0">Download backup</button>
-      <button class="save" id="btnRestore" style="margin:0;background:var(--petrol)">Restore backup</button>
+      <button class="save" id="btnRestore" style="margin:0;background:#D6437A">Restore backup</button>
     </div>
     <button class="save" id="btnCsv" style="margin-top:8px;background:var(--ground);color:var(--ink);border:1px solid var(--line)">Download CSV for a spreadsheet</button>
     <button class="save" id="btnAuth" style="margin-top:8px;background:var(--ground);color:var(--ink);border:1px solid var(--line)">Sign in to sync</button>
