@@ -1,0 +1,16 @@
+{
+  "name": "12-Week Log",
+  "short_name": "12-Week",
+  "description": "Training and body-composition log for a 12-week calisthenics recomposition block.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EDF0EF",
+  "theme_color": "#123B47",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,1074 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12-Week Log</title>
+<meta name="theme-color" content="#123B47">
+<meta name="description" content="Training and body-composition log for a 12-week calisthenics recomposition block.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="12-Week Log">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,75..125,400..800;1,75..125,400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ground:#EDF0EF;
+    --surface:#FFFFFF;
+    --ink:#10222A;
+    --petrol:#123B47;
+    --mineral:#2E7D8F;
+    --signal:#C8761F;
+    --muted:#7C8B90;
+    --line:#D3DAD9;
+    --pad:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:'Archivo',system-ui,sans-serif;
+    font-variation-settings:'wdth' 100;
+    font-size:15px;line-height:1.5;
+    padding-bottom:60px;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:0 var(--pad)}
+
+  /* ---------- type roles ---------- */
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:500;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  }
+  h1,h2,h3{margin:0;font-variation-settings:'wdth' 118;letter-spacing:-.01em}
+  h1{font-size:27px;font-weight:700;line-height:1.08}
+  h2{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+  h3{font-size:13.5px;font-weight:700}
+  .num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+
+  /* ---------- header ---------- */
+  header{background:var(--petrol);color:#EDF0EF;padding:22px 0 20px}
+  header .eyebrow{color:#7FAAB5}
+  header h1{margin-top:6px;color:#fff}
+  header .sub{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#9FC0C8;margin-top:7px;letter-spacing:.04em}
+  .datepick{
+    margin-top:14px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);
+    color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;
+    padding:7px 10px;border-radius:3px;width:100%;
+  }
+
+  /* ---------- tabs ---------- */
+  nav{
+    position:sticky;top:0;z-index:20;background:var(--ground);
+    border-bottom:1px solid var(--line);display:flex;
+  }
+  nav button{
+    flex:1;background:none;border:0;border-bottom:2px solid transparent;
+    padding:13px 4px;cursor:pointer;color:var(--muted);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;
+    letter-spacing:.12em;text-transform:uppercase;
+  }
+  nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--signal)}
+  nav button:focus-visible{outline:2px solid var(--mineral);outline-offset:-3px}
+
+  .panel{display:none;padding-top:22px}
+  .panel.on{display:block}
+
+  /* ---------- cards ---------- */
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:4px;
+    padding:16px;margin-bottom:14px;
+  }
+  .sechead{display:flex;align-items:baseline;gap:10px;margin:26px 0 11px}
+  .sechead .rule{flex:1;height:1px;background:var(--line)}
+
+  /* ---------- signature: hold timer ---------- */
+  .timer{
+    background:var(--petrol);border-radius:4px;padding:18px 16px 16px;
+    color:#fff;margin-bottom:14px;
+  }
+  .timer .eyebrow{color:#7FAAB5}
+  .tgrid{display:flex;align-items:center;gap:18px;margin-top:12px}
+  .dial{position:relative;width:118px;height:118px;flex:none}
+  .dial svg{transform:rotate(-90deg);display:block}
+  .dial .ring{fill:none;stroke:rgba(255,255,255,.15);stroke-width:7}
+  .dial .fill{fill:none;stroke:var(--mineral);stroke-width:7;stroke-linecap:round;
+    transition:stroke-dasharray .3s linear,stroke .3s}
+  .dial.pr .fill{stroke:var(--signal)}
+  .dialtxt{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+  }
+  .dialtxt b{font-family:'IBM Plex Mono',monospace;font-size:25px;font-weight:500;letter-spacing:-.02em}
+  .dialtxt span{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#9FC0C8;letter-spacing:.08em;margin-top:2px}
+  .tside{flex:1;min-width:0}
+  .tside select{
+    width:100%;background:rgba(255,255,255,.09);color:#fff;border:1px solid rgba(255,255,255,.2);
+    border-radius:3px;padding:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;
+  }
+  .tbtns{display:flex;gap:7px;margin-top:9px}
+  .tbtns button{
+    flex:1;padding:9px 0;border-radius:3px;cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#fff;
+  }
+  .tbtns button.go{background:var(--mineral);border-color:var(--mineral)}
+  .prtag{
+    margin-top:9px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--signal);min-height:14px;
+  }
+  .best{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#9FC0C8;margin-top:8px;letter-spacing:.05em}
+
+  /* ---------- exercise rows ---------- */
+  .ex{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .ex:last-child{border-bottom:0}
+  .ex input[type=checkbox]{
+    width:19px;height:19px;flex:none;accent-color:var(--mineral);cursor:pointer;margin:0;
+  }
+  .exmain{flex:1;min-width:0}
+  .exmain b{display:block;font-size:13.5px;font-weight:600}
+  .exmain span{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.03em}
+  .ex input[type=text]{
+    width:82px;flex:none;border:1px solid var(--line);border-radius:3px;padding:7px 8px;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--ground);color:var(--ink);
+  }
+  .ex.done .exmain b{color:var(--muted);text-decoration:line-through}
+
+  /* ---------- body metrics ---------- */
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .f label{display:block;margin-bottom:4px}
+  .f input{
+    width:100%;border:1px solid var(--line);border-radius:3px;padding:9px 10px;
+    font-family:'IBM Plex Mono',monospace;font-size:14px;background:var(--ground);color:var(--ink);
+  }
+  textarea{
+    width:100%;border:1px solid var(--line);border-radius:3px;padding:9px 10px;margin-top:11px;
+    font-family:'Archivo',sans-serif;font-size:14px;background:var(--ground);color:var(--ink);
+    resize:vertical;min-height:56px;
+  }
+  .energy{display:flex;gap:7px;margin-top:5px}
+  .energy button{
+    flex:1;padding:9px 0;border:1px solid var(--line);background:var(--ground);border-radius:3px;
+    font-family:'IBM Plex Mono',monospace;font-size:13px;cursor:pointer;color:var(--muted);
+  }
+  .energy button[aria-pressed="true"]{background:var(--petrol);color:#fff;border-color:var(--petrol)}
+
+  .save{
+    width:100%;padding:15px;background:var(--ink);color:#fff;border:0;border-radius:4px;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    cursor:pointer;margin-top:4px;
+  }
+  .save.ok{background:var(--mineral)}
+  .save:focus-visible,.energy button:focus-visible,.tbtns button:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+  /* ---------- progress ---------- */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:13px}
+  .stat b{display:block;font-family:'IBM Plex Mono',monospace;font-size:23px;font-weight:500;margin-top:4px;letter-spacing:-.02em}
+  .stat i{font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted)}
+  svg.chart{width:100%;height:132px;display:block;overflow:visible}
+
+  .bm{padding:10px 0;border-bottom:1px solid var(--line)}
+  .bm:last-child{border-bottom:0}
+  .bmtop{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .bmtop b{font-size:13.5px;font-weight:600}
+  .bmtop .v{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+  .track{height:6px;background:var(--ground);border-radius:3px;margin-top:7px;overflow:hidden;border:1px solid var(--line)}
+  .track div{height:100%;background:var(--mineral);border-radius:3px;transition:width .4s}
+  .bmedit{display:flex;gap:7px;align-items:center;margin-top:8px}
+  .bmedit input{
+    width:74px;border:1px solid var(--line);border-radius:3px;padding:6px 8px;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--ground);color:var(--ink);
+  }
+  .bmedit span{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted)}
+
+  .grid84{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-top:11px}
+  .grid84 div{aspect-ratio:1;border-radius:2px;background:var(--ground);border:1px solid var(--line)}
+  .grid84 div.log{background:var(--mineral);border-color:var(--mineral)}
+  .grid84 div.today{border:2px solid var(--signal)}
+
+  /* ---------- plan tab ---------- */
+  details{background:var(--surface);border:1px solid var(--line);border-radius:4px;margin-bottom:9px}
+  summary{
+    padding:13px 15px;cursor:pointer;font-weight:700;font-size:14px;
+    font-variation-settings:'wdth' 112;list-style:none;display:flex;justify-content:space-between;gap:10px;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:'+';font-family:'IBM Plex Mono',monospace;color:var(--muted);font-weight:400}
+  details[open] summary::after{content:'–'}
+  .dbody{padding:0 15px 15px;font-size:13.5px}
+  .dbody p{margin:0 0 9px;text-align:justify;hyphens:auto}
+  .dbody ul{margin:0 0 9px;padding-left:18px}
+  .dbody li{margin-bottom:5px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:9px}
+  th,td{text-align:left;padding:6px 7px 6px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+  td.n{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .note{font-size:12.5px;color:var(--muted);text-align:justify;hyphens:auto}
+  .warn{border-left:3px solid var(--signal);padding-left:12px;margin:11px 0}
+
+  .stamp{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;
+    text-align:center;margin-top:10px;color:var(--muted);
+  }
+  .stamp.ok{color:var(--mineral)}
+  .stamp.bad{
+    color:#8A4A0C;background:#FBEEDF;border:1px solid var(--signal);
+    border-radius:3px;padding:10px;text-align:left;line-height:1.5;
+  }
+  #gate{
+    position:fixed;inset:0;z-index:100;background:var(--petrol);color:#fff;
+    display:none;align-items:center;justify-content:center;padding:26px;
+  }
+  #gate .inner{max-width:360px;width:100%}
+  #gate h2{font-size:22px;color:#fff;text-transform:none;letter-spacing:-.01em;margin-bottom:9px}
+  #gate p{font-size:13.5px;color:#9FC0C8;line-height:1.55;margin:0 0 18px}
+  #gate input{
+    width:100%;padding:13px;border-radius:3px;border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.1);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:14px;
+  }
+  #gate input::placeholder{color:#7FAAB5}
+  #gate .row{display:flex;gap:8px;margin-top:10px}
+  #gate button{
+    flex:1;padding:13px;border-radius:3px;border:0;cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+    background:var(--mineral);color:#fff;
+  }
+  #gate button.ghost{background:transparent;border:1px solid rgba(255,255,255,.3);color:#9FC0C8}
+  #gateMsg{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--signal);
+    margin-top:13px;min-height:16px;line-height:1.5;
+  }
+  .toast{
+    position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(80px);
+    background:var(--ink);color:#fff;padding:11px 20px;border-radius:4px;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.08em;
+    transition:transform .3s;z-index:60;pointer-events:none;text-transform:uppercase;
+  }
+  .toast.up{transform:translateX(-50%) translateY(0)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div id="gate">
+  <div class="inner">
+    <div class="eyebrow" style="color:#7FAAB5">12-week recomposition</div>
+    <h2>Sign in to sync</h2>
+    <p>A one-time link arrives by email. No password. Your log is stored against your account and comes back on any device you sign in from.</p>
+    <input type="email" id="gateEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
+    <div class="row">
+      <button id="gateSend">Send link</button>
+      <button class="ghost" id="gateSkip">Use offline</button>
+    </div>
+    <div id="gateMsg"></div>
+  </div>
+</div>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">12-week recomposition</div>
+    <h1 id="hSession">Loading</h1>
+    <div class="sub" id="hMeta">—</div>
+    <input type="date" class="datepick" id="dateIn">
+  </div>
+</header>
+
+<nav role="tablist">
+  <button role="tab" id="tab-today" aria-selected="true">Today</button>
+  <button role="tab" id="tab-progress" aria-selected="false">Progress</button>
+  <button role="tab" id="tab-plan" aria-selected="false">Plan</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ TODAY ============ -->
+<section class="panel on" id="p-today">
+
+  <div class="timer">
+    <div class="eyebrow">Hold timer</div>
+    <div class="tgrid">
+      <div class="dial" id="dial">
+        <svg viewBox="0 0 118 118" width="118" height="118">
+          <circle class="ring" cx="59" cy="59" r="52"></circle>
+          <circle class="fill" id="arc" cx="59" cy="59" r="52" stroke-dasharray="0 327"></circle>
+        </svg>
+        <div class="dialtxt"><b id="tTime">0:00</b><span id="tTarget">target 60s</span></div>
+      </div>
+      <div class="tside">
+        <select id="holdSel"></select>
+        <div class="tbtns">
+          <button class="go" id="btnGo">Start</button>
+          <button id="btnReset">Reset</button>
+        </div>
+        <div class="best" id="tBest">—</div>
+        <div class="prtag" id="prTag"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sechead"><h2 id="exTitle">The session</h2><div class="rule"></div></div>
+  <div class="card" id="exList"></div>
+
+  <div class="sechead"><h2>The body</h2><div class="rule"></div></div>
+  <div class="card">
+    <div class="fields">
+      <div class="f"><label class="eyebrow" for="mWeight">Weight kg</label><input id="mWeight" inputmode="decimal" placeholder="—"></div>
+      <div class="f"><label class="eyebrow" for="mWaist">Waist cm</label><input id="mWaist" inputmode="decimal" placeholder="—"></div>
+      <div class="f"><label class="eyebrow" for="mSleep">Sleep hrs</label><input id="mSleep" inputmode="decimal" placeholder="—"></div>
+      <div class="f"><label class="eyebrow" for="mProtein">Protein g</label><input id="mProtein" inputmode="numeric" placeholder="130"></div>
+      <div class="f"><label class="eyebrow" for="mCals">Calories</label><input id="mCals" inputmode="numeric" placeholder="1950"></div>
+      <div class="f"><label class="eyebrow" for="mSteps">Steps</label><input id="mSteps" inputmode="numeric" placeholder="—"></div>
+    </div>
+    <div style="margin-top:13px">
+      <div class="eyebrow">Energy</div>
+      <div class="energy" id="energy"></div>
+    </div>
+    <textarea id="mNotes" placeholder="Notes — how it felt, what to change next time"></textarea>
+  </div>
+
+  <button class="save" id="btnSave">Save today</button>
+  <div class="stamp" id="status">Checking storage…</div>
+</section>
+
+<!-- ============ PROGRESS ============ -->
+<section class="panel" id="p-progress">
+  <div class="stats" id="statBoxes"></div>
+
+  <div class="sechead"><h2>Weight</h2><div class="rule"></div></div>
+  <div class="card">
+    <svg class="chart" id="cWeight"></svg>
+    <div class="note" style="margin-top:9px">Faint dots are daily readings. The solid line is the 7-day average — that is the only one worth reacting to. Scale readings swing 1 kg on water alone.</div>
+  </div>
+
+  <div class="sechead"><h2>Waist</h2><div class="rule"></div></div>
+  <div class="card">
+    <svg class="chart" id="cWaist"></svg>
+    <div class="note" style="margin-top:9px">Measured at the navel, morning, before food. This is the honest one. If the waist falls while weight holds steady, the plan is working exactly as intended.</div>
+  </div>
+
+  <div class="sechead"><h2>Benchmarks</h2><div class="rule"></div></div>
+  <div class="card" id="bmList"></div>
+
+  <div class="sechead"><h2>Consistency</h2><div class="rule"></div></div>
+  <div class="card">
+    <div class="eyebrow">84 days — filled means logged</div>
+    <div class="grid84" id="grid84"></div>
+  </div>
+
+  <div class="sechead"><h2>Your data</h2><div class="rule"></div></div>
+  <div class="card">
+    <div class="note" id="storeWhere">Checking where this page can store data…</div>
+    <div class="tbtns" style="margin-top:12px">
+      <button class="save" id="btnBackup" style="margin:0">Download backup</button>
+      <button class="save" id="btnRestore" style="margin:0;background:var(--petrol)">Restore backup</button>
+    </div>
+    <button class="save" id="btnCsv" style="margin-top:8px;background:var(--ground);color:var(--ink);border:1px solid var(--line)">Download CSV for a spreadsheet</button>
+    <button class="save" id="btnAuth" style="margin-top:8px;background:var(--ground);color:var(--ink);border:1px solid var(--line)">Sign in to sync</button>
+    <input type="file" id="fileIn" accept=".json" style="display:none">
+    <div class="note" style="margin-top:10px">The backup is a single JSON file holding every entry, record and date. Restoring merges it back in — it does not wipe what is already there.</div>
+  </div>
+</section>
+
+<!-- ============ PLAN ============ -->
+<section class="panel" id="p-plan">
+
+  <details open><summary>The goal, honestly</summary><div class="dbody">
+    <table>
+      <tr><th></th><th>Now</th><th>As stated</th><th>Realistic</th></tr>
+      <tr><td>Weight</td><td class="n">64 kg</td><td class="n">60 kg</td><td class="n">61–62 kg</td></tr>
+      <tr><td>Fat mass</td><td class="n">17.3 kg</td><td class="n">12.0 kg</td><td class="n">12.2 kg</td></tr>
+      <tr><td>Lean mass</td><td class="n">46.7 kg</td><td class="n">48.0 kg</td><td class="n">49–50 kg</td></tr>
+    </table>
+    <p>Going from 27% to 20% means losing about 5 kg of fat while gaining about 2 kg of muscle. At 177 cm and 64 kg you are not carrying excess weight, you are carrying too little muscle. Dieting straight down to 60 kg lands you near 24% and softer than you are now.</p>
+    <div class="warn note">Stop targeting 60 kg. Target the waist tape and the photos. Built properly, you may sit at 62 kg and look far leaner than 60 kg would have.</div>
+    <p class="note">The Eufy body-fat reading is bioimpedance, accurate to roughly ±5% and it moves with hydration. Trend only, never a single number. Realistic timeline for 5 kg of fat at a muscle-sparing rate is 16 to 20 weeks.</p>
+  </div></details>
+
+  <details><summary>The week</summary><div class="dbody">
+    <table>
+      <tr><th>Day</th><th>Session</th><th>Time</th></tr>
+      <tr><td>Mon</td><td>Strength A — Push</td><td class="n">60</td></tr>
+      <tr><td>Tue</td><td>Mobility B + handstand</td><td class="n">30</td></tr>
+      <tr><td>Wed</td><td>Strength B — Pull</td><td class="n">60</td></tr>
+      <tr><td>Thu</td><td>Swim</td><td class="n">30–40</td></tr>
+      <tr><td>Fri</td><td>Mobility A + walk, Thai massage</td><td class="n">30</td></tr>
+      <tr><td>Sat</td><td>Strength C — Legs & Abs</td><td class="n">60</td></tr>
+      <tr><td>Sun</td><td>Hyrox</td><td class="n">60–75</td></tr>
+    </table>
+    <div class="warn note">Legs on Saturday and Hyrox on Sunday means two hard lower-body days back to back. That is the trade for the weekend you asked for, and it works — but only if Sunday runs at genuinely easy effort. The Sunday list is already rebalanced toward the SkiErg and rower and away from lunges and wall balls, because your quads will not be fresh. If your knees or lower back complain by Week 3, move legs to Friday.</div>
+    <p>On Monday, Wednesday and Saturday the 30-minute daily block is mobility only, in the evening, nothing loaded. Twelve hours a day at a desk is the single biggest thing working against you. The daily block exists to fight it.</p>
+    <p class="note">Deload in Week 6 — halve every set count, keep the loads. Test at the end of Weeks 4, 8 and 12.</p>
+  </div></details>
+
+  <details><summary>Warm-up — every session</summary><div class="dbody">
+    <ul>
+      <li>Wrist circles and wrist rocks, palms down then up — 60s</li>
+      <li>Shoulder CARs — 5 slow circles each arm</li>
+      <li>Cat-cow — 10</li>
+      <li>90/90 hip switches — 10 each side</li>
+      <li>Glute bridge — 15</li>
+      <li>Scapular push-up — 10</li>
+    </ul>
+  </div></details>
+
+  <details><summary>Desk protocol — costs nothing</summary><div class="dbody">
+    <p>Once an hour: stand, 30 seconds of couch stretch each side, 10 shoulder rolls, 5 scapular squeezes. Set a timer. This matters more than any single stretching session you will do.</p>
+  </div></details>
+
+  <details><summary>Nutrition</summary><div class="dbody">
+    <table>
+      <tr><th>Target</th><th></th></tr>
+      <tr><td>Calories</td><td class="n">1,900–2,000</td></tr>
+      <tr><td><b>Protein</b></td><td class="n"><b>130 g</b></td></tr>
+      <tr><td>Fat</td><td class="n">60–70 g</td></tr>
+      <tr><td>Carbs</td><td class="n">190–210 g</td></tr>
+    </table>
+    <p>Maintenance is roughly 2,100 kcal. The deficit is deliberately small — large enough to lose fat, small enough to still build muscle. Expect 0.25 to 0.4 kg per week. Faster than that means losing muscle, which is the opposite of the goal.</p>
+    <p class="note">Protein anchors: 100 g chicken breast ≈ 31 g · 3 eggs ≈ 18 g · 170 g Greek yoghurt ≈ 17 g · 1 scoop whey ≈ 25 g · 100 g salmon ≈ 25 g · 150 g cottage cheese ≈ 17 g · 100 g cooked lentils ≈ 9 g. Hitting 130 g means protein at every meal plus a shake, not one large protein dinner.</p>
+    <p class="note">Carbs in the meal before strength work. Water 2.5 to 3 L, more on swim and Hyrox days. Alcohol is the easiest lever — it blunts protein synthesis and adds calories with no fullness.</p>
+  </div></details>
+
+  <details><summary>Hyrox — Sunday</summary><div class="dbody">
+    <p>High fatigue, you are a beginner, and it now falls the day after legs. In Phase 1 go at conversational effort and scale everything. This is conditioning, not a second strength session.</p>
+    <ul>
+      <li>800 m run, easy</li><li>500 m SkiErg</li>
+      <li>400 m run</li><li>10 wall balls, 4 kg — depth is the point</li>
+      <li>400 m run</li><li>20 burpee step-outs, no jump</li>
+      <li>400 m run</li><li>40 m farmer carry</li>
+      <li>400 m run</li><li>500 m row</li>
+      <li>10 min cool down, couch stretch both sides</li>
+    </ul>
+    <p class="note">Lunges are deliberately gone and wall balls are cut from 15 to 10, because Saturday already loaded your quads and glutes. Add them back from Week 8 only if Sunday feels easy.</p>
+    <div class="warn note">If Sunday leaves you wrecked into Monday, cut it to every other week. Recovery is the limiting factor on a 12-hour desk day, not effort.</div>
+  </div></details>
+
+  <details><summary>Swap list — variation without losing progress</summary><div class="dbody">
+    <table>
+      <tr><th>Instead of</th><th>Try</th></tr>
+      <tr><td>Goblet squat</td><td>DB front squat · split squat · box squat · 3s tempo</td></tr>
+      <tr><td>DB RDL</td><td>Single-leg RDL · good morning · banded hinge</td></tr>
+      <tr><td>Push-up</td><td>Diamond · wide · archer · tempo · deficit</td></tr>
+      <tr><td>DB row</td><td>Chest-supported · single-arm · inverted · band</td></tr>
+      <tr><td>Overhead press</td><td>Arnold · landmine · pike push-up</td></tr>
+      <tr><td>Bulgarian split squat</td><td>Reverse lunge · step-up · walking lunge</td></tr>
+      <tr><td>Hollow hold</td><td>Dead bug · leg raise · V-up · hollow rock</td></tr>
+      <tr><td>Plank</td><td>RKC · long-lever · shoulder tap · ab wheel</td></tr>
+      <tr><td>Farmer carry</td><td>Suitcase · overhead · front rack</td></tr>
+    </table>
+    <p class="note">Swap within a row, never across. Change one or two exercises per phase, not every week. You cannot progress what you do not repeat.</p>
+  </div></details>
+
+  <details><summary>Thai massage, TCM and herbs</summary><div class="dbody">
+    <p>Keep the weekly Thai massage. Soft-tissue work is genuinely useful for someone sitting twelve hours a day, and Sunday is the right slot.</p>
+    <p>On herbs, honestly: acupuncture and massage are low-risk and many people find them helpful for tension and sleep. Herbal formulas are a different category. Buy only from a licensed practitioner or an established supplier — adulteration and heavy-metal contamination in unregulated herbal products is a documented problem. Some formulas affect liver enzymes or interact with medications, so tell your practitioner everything you take.</p>
+    <p class="note">Do not expect herbs to move body composition. Nothing in that category will. Judge them on how you sleep and feel.</p>
+  </div></details>
+
+  <details><summary>The four rules that matter most</summary><div class="dbody">
+    <ul>
+      <li><b>Protein at 130 g, every day.</b> Everything else in nutrition is negotiable. This is not.</li>
+      <li><b>Progress the log, not the feeling.</b> Add a rep, a second, or 2.5 kg, and write it down. A session that felt hard but matched last week is not progress.</li>
+      <li><b>Recovery is the bottleneck, not effort.</b> The failure mode here is doing too much. If sleep drops or sessions get worse two weeks running, cut volume by a third.</li>
+      <li><b>Stop weighing the goal in kilograms.</b> Waist, photos and the pull-up bar tell the truth.</li>
+    </ul>
+  </div></details>
+
+  <div class="card" style="margin-top:16px">
+    <div class="eyebrow">Start date</div>
+    <input type="date" id="startIn" style="width:100%;margin-top:7px;border:1px solid var(--line);border-radius:3px;padding:9px;font-family:'IBM Plex Mono',monospace;font-size:13px;background:var(--ground);color:var(--ink)">
+    <div class="note" style="margin-top:8px">Sets Week 1, Day 1. Everything else counts forward from here.</div>
+  </div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------------- storage ----------------
+   Offline-first. localStorage is the working copy so the page is
+   instant and usable with no signal in the gym. Supabase is the
+   source of truth, synced on load and after every save.
+------------------------------------------- */
+var KEY='recomp-v1', mem=null, MODE='memory';
+var SB=null, USER=null, DIRTY={}, SYNCING=false;
+var DB={logs:{},best:{},start:null};
+
+function todayISO(d){d=d||new Date();return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);}
+
+function configured(){
+  var c=window.APP_CONFIG;
+  return !!(c&&c.supabaseUrl&&c.supabaseAnonKey&&c.supabaseUrl.indexOf('PASTE_')<0);
+}
+
+/* --- local cache --- */
+function localProbe(){
+  try{
+    window.localStorage.setItem('__probe','ok');
+    if(window.localStorage.getItem('__probe')==='ok'){
+      window.localStorage.removeItem('__probe');return true;
+    }
+  }catch(e){}
+  return false;
+}
+function localLoad(){
+  try{var r=window.localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}
+  return null;
+}
+function localSave(){
+  mem=JSON.parse(JSON.stringify(DB));
+  try{window.localStorage.setItem(KEY,JSON.stringify(DB));return true;}catch(e){return false;}
+}
+
+/* --- supabase --- */
+async function sbInit(){
+  if(!configured()||!window.supabase)return;
+  SB=window.supabase.createClient(APP_CONFIG.supabaseUrl,APP_CONFIG.supabaseAnonKey);
+  try{
+    var s=await SB.auth.getSession();
+    USER=(s.data&&s.data.session)?s.data.session.user:null;
+  }catch(e){USER=null;}
+  SB.auth.onAuthStateChange(function(_e,sess){
+    var was=USER;USER=sess?sess.user:null;
+    if(USER&&!was){gate(false);pull().then(function(){renderToday();renderProgress();});}
+    if(!USER)MODE=localProbe()?'browser':'memory';
+    stamp();
+  });
+}
+
+/* pull remote, merge into DB. Newer updated_at wins per day. */
+async function pull(){
+  if(!SB||!USER)return;
+  try{
+    var e=await SB.from('entries').select('day,data,updated_at').eq('user_id',USER.id);
+    if(e.error)throw e.error;
+    (e.data||[]).forEach(function(row){
+      var local=DB.logs[row.day];
+      if(!local||!local._ts||new Date(row.updated_at)>new Date(local._ts)){
+        DB.logs[row.day]=Object.assign({},row.data,{_ts:row.updated_at});
+      }
+    });
+    var p=await SB.from('profile').select('start_date,best').eq('user_id',USER.id).maybeSingle();
+    if(!p.error&&p.data){
+      if(p.data.start_date)DB.start=p.data.start_date;
+      DB.best=Object.assign({},p.data.best||{},DB.best);
+    }
+    MODE='cloud';localSave();
+  }catch(err){ MODE=localProbe()?'browser':'memory'; }
+}
+
+/* push the days marked dirty plus the profile */
+async function push(){
+  if(!SB||!USER||SYNCING)return false;
+  var days=Object.keys(DIRTY);
+  if(!days.length)return true;
+  SYNCING=true;
+  try{
+    var rows=days.map(function(d){
+      var c=Object.assign({},DB.logs[d]);delete c._ts;
+      return {user_id:USER.id,day:d,data:c,updated_at:new Date().toISOString()};
+    });
+    var r=await SB.from('entries').upsert(rows,{onConflict:'user_id,day'});
+    if(r.error)throw r.error;
+    var p=await SB.from('profile').upsert(
+      {user_id:USER.id,start_date:DB.start,best:DB.best,updated_at:new Date().toISOString()},
+      {onConflict:'user_id'});
+    if(p.error)throw p.error;
+    DIRTY={};MODE='cloud';SYNCING=false;return true;
+  }catch(err){ SYNCING=false; MODE=localProbe()?'browser':'memory'; return false; }
+}
+
+async function load(){
+  await sbInit();
+  var l=localLoad();
+  if(l)DB=Object.assign(DB,l);
+  else if(mem)DB=Object.assign(DB,mem);
+  MODE=localProbe()?'browser':'memory';
+  if(USER)await pull();
+  if(!DB.start)DB.start=todayISO();
+  gate(configured()&&!USER);
+}
+
+async function save(quiet){
+  if(configured())DIRTY[cur]=1; else DIRTY={};
+  var ok=localSave();
+  if(!ok&&MODE!=='cloud')MODE='memory';
+  stamp(true);
+  if(USER){ var s=await push(); stamp(true); return s; }
+  return ok;
+}
+
+function stamp(justSaved){
+  var el=$('status');
+  var pending=configured()?Object.keys(DIRTY).length:0;
+  if(el){
+    if(MODE==='memory'){
+      el.className='stamp bad';
+      el.textContent='Not saving. This browser will not store data. Download a backup from the Progress tab before you close the tab.';
+    } else if(justSaved){
+      var n=new Date();
+      el.className='stamp ok';
+      el.textContent='Saved '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+
+        (MODE==='cloud'&&!pending?' · synced':' · on this device'+(pending?', '+pending+' to sync':''));
+    } else {
+      el.className='stamp';
+      el.textContent=MODE==='cloud'?'Synced to your account':'Saving to this browser';
+    }
+  }
+  var w=$('storeWhere');
+  if(w){
+    w.innerHTML={
+      cloud:'<b>Synced to your account.</b> Entries are written to this browser first so the page works with no signal, then pushed to the database. They come back on any device you sign in from.',
+      browser:'<b>Saving to this browser only.</b> '+(configured()?'Sign in to sync across devices. ':'No database is configured, so there is nothing to sync to. ')+'Clearing site data or switching device loses everything, so take a backup now and then.',
+      memory:'<b>Nothing is being saved.</b> This browser is blocking storage, most likely private browsing. Download a backup before closing.'
+    }[MODE];
+  }
+  var b=$('btnAuth');
+  if(b)b.textContent=USER?('Sign out '+(USER.email||'')):'Sign in to sync';
+}
+
+/* --- sign-in gate --- */
+function gate(show){
+  var g=$('gate');if(!g)return;
+  g.style.display=show?'flex':'none';
+}
+async function sendLink(email){
+  if(!SB)return;
+  var m=$('gateMsg');
+  m.textContent='Sending…';
+  try{
+    var r=await SB.auth.signInWithOtp({email:email,options:{emailRedirectTo:window.location.href.split('#')[0]}});
+    if(r.error)throw r.error;
+    m.textContent='Link sent. Open it on this device to finish signing in.';
+  }catch(e){ m.textContent='Could not send: '+(e.message||'unknown error'); }
+}
+
+/* ---------------- plan data ---------------- */
+var HOLDS=[
+  {k:'plank',n:'Hard plank',t:180},
+  {k:'handstand',n:'Wall handstand',t:60},
+  {k:'hang',n:'Dead hang',t:60},
+  {k:'hollow',n:'Hollow hold',t:60},
+  {k:'sideplank',n:'Side plank',t:45},
+  {k:'squat',n:'Deep squat hold',t:60},
+  {k:'free',n:'Free timer',t:0}
+];
+
+// prescription per phase (1,2,3)
+function P(a,b,c){return{1:a,2:b||a,3:c||b||a};}
+
+var SESS={
+ 1:{title:'Session A — Push',ex:[
+   ['Incline push-up',P('4 × 8–12 · bench','—','—')],
+   ['Push-up · floor',P('—','4 × 6–10','—')],
+   ['Push-up · feet elevated',P('—','—','4 × 8–12')],
+   ['DB bench press',P('—','3 × 8','3 × 8')],
+   ['DB overhead press',P('3 × 8–10')],
+   ['Goblet squat',P('3 × 10','3 × 8 loaded','4 × 8 loaded')],
+   ['DB Romanian deadlift',P('3 × 10','3 × 10','3 × 8 loaded')],
+   ['Wall walk',P('3 × 3','—','—')],
+   ['Chest-to-wall handstand',P('—','4 × 20–40s','4 × 30–50s')],
+   ['Hollow hold',P('4 × 20s','4 × 30s straight','4 × 40s')],
+   ['Hard plank',P('3 × 30s','3 × 60s','2 × 90s')]
+ ]},
+ 3:{title:'Session B — Pull',ex:[
+   ['Pull-up attempts',P('—','—','5 singles · 90s rest')],
+   ['Dead hang',P('3 × max · aim 30s','3 × max · aim 45s','3 × max · aim 60s')],
+   ['Scapular pull-up',P('3 × 8','3 × 10','3 × 10')],
+   ['Negative pull-up',P('4 × 3 · 5s lower','—','—')],
+   ['Band-assisted pull-up',P('—','4 × 4','4 × 5')],
+   ['DB row',P('4 × 10 each','4 × 10 loaded','4 × 8 loaded')],
+   ['Bulgarian split squat',P('3 × 8 each','3 × 8 loaded','3 × 8 loaded')],
+   ['Band face pull',P('3 × 15')],
+   ['Side plank',P('3 × 20s each','3 × 30s each','3 × 45s each')],
+   ['Dead bug',P('3 × 10 each')]
+ ]},
+ 6:{title:'Session C — Legs & Abs',ex:[
+   ['DB front squat',P('4 × 8','4 × 8 loaded','4 × 6 loaded')],
+   ['Reverse lunge',P('3 × 10 each','3 × 10 loaded','3 × 8 loaded')],
+   ['DB hip thrust',P('3 × 12','3 × 12 loaded','3 × 10 loaded')],
+   ['Single-leg RDL',P('3 × 8 each','3 × 8 loaded','3 × 8 loaded')],
+   ['Farmer carry',P('3 × 40 m heavy')],
+   ['Hanging knee raise',P('3 × 8','3 × 12','3 × 12 straight leg')],
+   ['Copenhagen plank',P('—','2 × 15s each','2 × 25s each')],
+   ['Hollow rock',P('3 × 10','3 × 12','3 × 15')],
+   ['Hard plank',P('3 × 40s','3 × 60s','2 × 90s')]
+ ]},
+ 2:{title:'Mobility B — Shoulders & wrists',ex:[
+   ['Wrist prep · 6 positions',P('20s each')],
+   ['Wall slides',P('3 × 10')],
+   ['Band dislocates',P('3 × 10')],
+   ['Prone Y-T-W raises',P('3 × 8 each')],
+   ['Chest-to-wall handstand',P('4 × 20–40s')],
+   ['Hollow hold',P('3 × 30s')],
+   ['Hard plank',P('2 × current max')]
+ ]},
+ 4:{title:'Swim',ex:[
+   ['Freestyle · easy',P('4 × 100 m')],
+   ['Backstroke',P('4 × 50 m · opens the chest')],
+   ['Moderate set',P('4 × 50 m')],
+   ['Cool down',P('200 m')]
+ ]},
+ 0:{title:'Hyrox',ex:[
+   ['Run',P('800 m easy · legs are pre-fatigued')],
+   ['SkiErg',P('500 m')],
+   ['Run',P('400 m')],
+   ['Wall balls 4 kg',P('10 · depth over speed')],
+   ['Run',P('400 m')],
+   ['Burpee step-outs',P('20 · no jump')],
+   ['Run',P('400 m')],
+   ['Farmer carry',P('40 m')],
+   ['Run',P('400 m')],
+   ['Row',P('500 m')],
+   ['Cool down + couch stretch',P('10 min')]
+ ]},
+ 5:{title:'Mobility A — Hips & spine',ex:[
+   ['Couch stretch',P('90s each side')],
+   ['90/90 hip switch + lean',P('10 each')],
+   ['Deep squat hold',P('3 × 60s')],
+   ['Thread the needle',P('10 each')],
+   ['Thoracic extension over roller',P('90s')],
+   ['Jefferson curl · light DB',P('3 × 5')],
+   ['Brisk walk',P('12–15 min')]
+ ]}
+};
+
+var BENCH=[
+  {k:'pushup',n:'Push-ups strict',s:8,t:25,u:'reps'},
+  {k:'pullup',n:'Pull-ups',s:0,t:3,u:'reps'},
+  {k:'hang',n:'Dead hang',s:15,t:60,u:'s'},
+  {k:'hollow',n:'Hollow hold',s:10,t:60,u:'s'},
+  {k:'plank',n:'Hard plank',s:30,t:180,u:'s'},
+  {k:'handstand',n:'Wall handstand',s:0,t:60,u:'s'}
+];
+
+/* ---------------- helpers ---------------- */
+var $=function(id){return document.getElementById(id);};
+var cur=todayISO();
+
+function weekOf(iso){
+  var d=(new Date(iso)-new Date(DB.start))/864e5;
+  return Math.max(1,Math.min(12,Math.floor(d/7)+1));
+}
+function phaseOf(w){return w<=4?1:(w<=8?2:3);}
+
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('up');
+  clearTimeout(t._x);t._x=setTimeout(function(){t.classList.remove('up');},2200);}
+
+function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+
+/* ---------------- render today ---------------- */
+function renderToday(){
+  var d=new Date(cur+'T12:00:00'), wd=d.getDay(), w=weekOf(cur), ph=phaseOf(w);
+  var s=SESS[wd], log=DB.logs[cur]||{};
+
+  $('hSession').textContent=s.title;
+  $('hMeta').textContent='WEEK '+String(w).padStart(2,'0')+' · PHASE '+ph+' · '+
+    d.toLocaleDateString(undefined,{weekday:'long'})+(w===6?' · DELOAD — HALVE THE SETS':'')+
+    ([4,8,12].indexOf(w)>-1?' · TEST WEEK':'');
+  $('dateIn').value=cur;
+  $('exTitle').textContent=(wd===2||wd===5)?'The block':((wd===4||wd===0)?'The workout':'The session');
+
+  var html='';
+  s.ex.forEach(function(e,i){
+    var pres=e[1][ph]; if(pres==='—')return;
+    var v=(log.ex&&log.ex[e[0]])||{};
+    html+='<div class="ex'+(v.done?' done':'')+'" data-n="'+i+'">'+
+      '<input type="checkbox" data-ex="'+e[0]+'"'+(v.done?' checked':'')+' aria-label="Done">'+
+      '<div class="exmain"><b>'+e[0]+'</b><span>'+pres+'</span></div>'+
+      '<input type="text" data-exv="'+e[0]+'" value="'+(v.v||'').replace(/"/g,'&quot;')+'" placeholder="log" aria-label="Result">'+
+    '</div>';
+  });
+  $('exList').innerHTML=html;
+
+  ['mWeight|weight','mWaist|waist','mSleep|sleep','mProtein|protein','mCals|cals','mSteps|steps'].forEach(function(p){
+    var a=p.split('|'); $(a[0]).value=log[a[1]]||'';
+  });
+  $('mNotes').value=log.notes||'';
+  var eh='';for(var i=1;i<=5;i++)eh+='<button data-e="'+i+'" aria-pressed="'+(log.energy===i)+'">'+i+'</button>';
+  $('energy').innerHTML=eh;
+}
+
+/* ---------------- timer ---------------- */
+var C=2*Math.PI*52, tSec=0, tRun=null, tKey='plank';
+
+function holdOpts(){
+  $('holdSel').innerHTML=HOLDS.map(function(h){return '<option value="'+h.k+'">'+h.n+'</option>';}).join('');
+  $('holdSel').value=tKey;
+}
+function holdMeta(){return HOLDS.filter(function(h){return h.k===tKey;})[0];}
+
+function paintTimer(){
+  var m=holdMeta(), tgt=m.t;
+  $('tTime').textContent=fmt(tSec);
+  $('tTarget').textContent=tgt?('target '+tgt+'s'):'no target';
+  var f=tgt?Math.min(1,tSec/tgt):0;
+  $('arc').setAttribute('stroke-dasharray',(f*C).toFixed(1)+' '+C.toFixed(1));
+  var b=DB.best[tKey]||0;
+  $('tBest').textContent=b?('best '+fmt(b)):'no record yet';
+  $('dial').classList.toggle('pr',tgt>0&&tSec>=tgt);
+}
+function tick(){tSec++;paintTimer();}
+
+function stopTimer(){
+  clearInterval(tRun);tRun=null;$('btnGo').textContent='Start';
+  if(tSec<=0)return;
+  var b=DB.best[tKey]||0;
+  if(tSec>b){
+    DB.best[tKey]=tSec;
+    var bm=BENCH.filter(function(x){return x.k===tKey;})[0];
+    if(bm){DB.logs[cur]=DB.logs[cur]||{};DB.logs[cur].bm=DB.logs[cur].bm||{};DB.logs[cur].bm[tKey]=tSec;}
+    $('prTag').textContent='Personal record · '+fmt(tSec);
+    save();renderProgress();
+  } else {
+    $('prTag').textContent='';
+  }
+  paintTimer();
+}
+
+/* ---------------- charts ---------------- */
+function series(field){
+  return Object.keys(DB.logs).sort().filter(function(k){return DB.logs[k][field];})
+    .map(function(k){return{d:k,v:parseFloat(DB.logs[k][field])};})
+    .filter(function(p){return !isNaN(p.v);});
+}
+function roll(pts,n){
+  return pts.map(function(p,i){
+    var s=pts.slice(Math.max(0,i-n+1),i+1);
+    return{d:p.d,v:s.reduce(function(a,b){return a+b.v;},0)/s.length};
+  });
+}
+function drawChart(el,pts,avg,color){
+  var W=520,H=132,PL=34,PR=8,PT=10,PB=20;
+  if(pts.length<2){el.innerHTML='<text x="10" y="66" font-family="IBM Plex Mono" font-size="11" fill="#7C8B90">Two readings needed before a line appears</text>';
+    el.setAttribute('viewBox','0 0 '+W+' '+H);return;}
+  var vs=pts.map(function(p){return p.v;}).concat(avg?avg.map(function(p){return p.v;}):[]);
+  var mn=Math.min.apply(null,vs),mx=Math.max.apply(null,vs);
+  if(mx-mn<1){mx+=.5;mn-=.5;}
+  var pad=(mx-mn)*.15;mn-=pad;mx+=pad;
+  var X=function(i){return PL+(W-PL-PR)*(pts.length<2?0:i/(pts.length-1));};
+  var Y=function(v){return PT+(H-PT-PB)*(1-(v-mn)/(mx-mn));};
+  var g='';
+  [0,.5,1].forEach(function(f){
+    var y=PT+(H-PT-PB)*f, v=(mx-(mx-mn)*f);
+    g+='<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="#D3DAD9" stroke-width="1"/>'+
+       '<text x="0" y="'+(y+3.5)+'" font-family="IBM Plex Mono" font-size="9.5" fill="#7C8B90">'+v.toFixed(1)+'</text>';
+  });
+  pts.forEach(function(p,i){g+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="2.4" fill="'+color+'" opacity=".3"/>';});
+  if(avg&&avg.length>1){
+    g+='<polyline fill="none" stroke="'+color+'" stroke-width="2.2" stroke-linejoin="round" points="'+
+      avg.map(function(p,i){return X(i).toFixed(1)+','+Y(p.v).toFixed(1);}).join(' ')+'"/>';
+  }
+  g+='<text x="'+PL+'" y="'+(H-5)+'" font-family="IBM Plex Mono" font-size="9" fill="#7C8B90">'+pts[0].d.slice(5)+'</text>'+
+     '<text x="'+(W-PR)+'" y="'+(H-5)+'" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="#7C8B90">'+pts[pts.length-1].d.slice(5)+'</text>';
+  el.setAttribute('viewBox','0 0 '+W+' '+H);
+  el.innerHTML=g;
+}
+
+/* ---------------- progress ---------------- */
+function renderProgress(){
+  var wt=series('weight'), wa=series('waist');
+  drawChart($('cWeight'),wt,roll(wt,7),'#2E7D8F');
+  drawChart($('cWaist'),wa,roll(wa,3),'#123B47');
+
+  var keys=Object.keys(DB.logs).sort();
+  var last7=keys.slice(-7);
+  var pr=last7.map(function(k){return parseFloat(DB.logs[k].protein);}).filter(function(v){return !isNaN(v);});
+  var sl=last7.map(function(k){return parseFloat(DB.logs[k].sleep);}).filter(function(v){return !isNaN(v);});
+  var done=keys.filter(function(k){var l=DB.logs[k].ex;return l&&Object.keys(l).some(function(x){return l[x].done;});}).length;
+  var avg7=roll(wt,7), latest=avg7.length?avg7[avg7.length-1].v:null;
+  var first=avg7.length?avg7[0].v:null;
+
+  var boxes=[
+    ['7-day weight', latest!==null?latest.toFixed(1)+' kg':'—', first!==null&&avg7.length>3?((latest-first>=0?'+':'')+(latest-first).toFixed(1)+' kg since start'):'need a week of data'],
+    ['Protein avg', pr.length?Math.round(pr.reduce(function(a,b){return a+b;},0)/pr.length)+' g':'—', 'target 130 g'],
+    ['Sleep avg', sl.length?(sl.reduce(function(a,b){return a+b;},0)/sl.length).toFixed(1)+' h':'—','floor is 7 h'],
+    ['Sessions done', done, 'of '+weekOf(todayISO())*5+' scheduled so far']
+  ];
+  $('statBoxes').innerHTML=boxes.map(function(b){
+    return '<div class="stat"><div class="eyebrow">'+b[0]+'</div><b>'+b[1]+'</b><i>'+b[2]+'</i></div>';
+  }).join('');
+
+  $('bmList').innerHTML=BENCH.map(function(b){
+    var v=DB.best[b.k]!==undefined?DB.best[b.k]:b.s;
+    var pct=Math.max(0,Math.min(100,((v-b.s)/(b.t-b.s))*100));
+    return '<div class="bm"><div class="bmtop"><b>'+b.n+'</b>'+
+      '<span class="v">'+v+' '+b.u+' → '+b.t+' '+b.u+'</span></div>'+
+      '<div class="track"><div style="width:'+pct.toFixed(0)+'%"></div></div>'+
+      '<div class="bmedit"><input data-bm="'+b.k+'" value="'+v+'" inputmode="numeric" aria-label="'+b.n+' record">'+
+      '<span>current record in '+b.u+'</span></div></div>';
+  }).join('');
+
+  var g='',st=new Date(DB.start+'T12:00:00');
+  for(var i=0;i<84;i++){
+    var dd=new Date(st.getTime()+i*864e5), k=todayISO(dd);
+    g+='<div class="'+(DB.logs[k]?'log':'')+(k===todayISO()?' today':'')+'" title="'+k+'"></div>';
+  }
+  $('grid84').innerHTML=g;
+}
+
+/* ---------------- collect + save ---------------- */
+function collect(){
+  var l=DB.logs[cur]||{};l.ex=l.ex||{};
+  document.querySelectorAll('[data-ex]').forEach(function(c){
+    l.ex[c.dataset.ex]=l.ex[c.dataset.ex]||{};l.ex[c.dataset.ex].done=c.checked;
+  });
+  document.querySelectorAll('[data-exv]').forEach(function(c){
+    l.ex[c.dataset.exv]=l.ex[c.dataset.exv]||{};l.ex[c.dataset.exv].v=c.value;
+  });
+  [['mWeight','weight'],['mWaist','waist'],['mSleep','sleep'],['mProtein','protein'],['mCals','cals'],['mSteps','steps']]
+    .forEach(function(p){var v=$(p[0]).value.trim();if(v)l[p[1]]=v;else delete l[p[1]];});
+  var n=$('mNotes').value.trim();if(n)l.notes=n;else delete l.notes;
+  var e=$('energy').querySelector('[aria-pressed="true"]');
+  if(e)l.energy=parseInt(e.dataset.e,10);
+  DB.logs[cur]=l;
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener('click',function(ev){
+  var t=ev.target;
+
+  if(t.id&&t.id.indexOf('tab-')===0){
+    ['today','progress','plan'].forEach(function(k){
+      var on=('tab-'+k)===t.id;
+      $('tab-'+k).setAttribute('aria-selected',on);
+      $('p-'+k).classList.toggle('on',on);
+    });
+    if(t.id==='tab-progress')renderProgress();
+    window.scrollTo(0,0);return;
+  }
+  if(t.dataset&&t.dataset.e){
+    $('energy').querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',b===t);});return;
+  }
+  if(t.type==='checkbox'&&t.dataset.ex){t.closest('.ex').classList.toggle('done',t.checked);return;}
+
+  if(t.id==='btnGo'){
+    if(tRun){stopTimer();}
+    else{$('prTag').textContent='';tRun=setInterval(tick,1000);t.textContent='Stop';}
+    return;
+  }
+  if(t.id==='btnReset'){clearInterval(tRun);tRun=null;tSec=0;$('btnGo').textContent='Start';$('prTag').textContent='';paintTimer();return;}
+
+  if(t.id==='gateSend'){
+    var em=$('gateEmail').value.trim();
+    if(!em||em.indexOf('@')<0){$('gateMsg').textContent='Enter a valid email address.';return;}
+    sendLink(em);return;
+  }
+  if(t.id==='gateSkip'){gate(false);toast('Offline mode — backup regularly');return;}
+  if(t.id==='btnAuth'){
+    if(!configured()){toast('No database configured — see the README');return;}
+    if(USER){SB.auth.signOut().then(function(){USER=null;stamp();toast('Signed out');});}
+    else{gate(true);}
+    return;
+  }
+
+  if(t.id==='btnBackup'){
+    collect();
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,1)],{type:'application/json'}));
+    a.download='training-log-'+todayISO()+'.json';a.click();URL.revokeObjectURL(a.href);
+    toast('Backup downloaded');return;
+  }
+  if(t.id==='btnRestore'){$('fileIn').click();return;}
+
+  if(t.id==='btnCsv'){
+    var cols=['date','weight','waist','sleep','protein','cals','steps','energy','notes','completed'];
+    var rows=[cols.join(',')];
+    Object.keys(DB.logs).sort().forEach(function(k){
+      var l=DB.logs[k], done=l.ex?Object.keys(l.ex).filter(function(x){return l.ex[x].done;}).length:0;
+      rows.push(cols.map(function(c){
+        var v = c==='date'?k : (c==='completed'?done : (l[c]===undefined?'':l[c]));
+        return '"'+String(v).replace(/"/g,'""')+'"';
+      }).join(','));
+    });
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([rows.join('\n')],{type:'text/csv'}));
+    a.download='training-log.csv';a.click();URL.revokeObjectURL(a.href);
+    toast('CSV downloaded');return;
+  }
+
+  if(t.id==='btnSave'){
+    collect();save().then(function(){
+      t.classList.add('ok');t.textContent='Saved';
+      setTimeout(function(){t.classList.remove('ok');t.textContent='Save today';},1600);
+      renderProgress();
+    });
+    return;
+  }
+});
+
+$('holdSel').addEventListener('change',function(){tKey=this.value;tSec=0;clearInterval(tRun);tRun=null;$('btnGo').textContent='Start';$('prTag').textContent='';paintTimer();});
+$('dateIn').addEventListener('change',function(){collect();save();cur=this.value;renderToday();});
+$('startIn').addEventListener('change',function(){DB.start=this.value;save();renderToday();renderProgress();});
+$('fileIn').addEventListener('change',function(ev){
+  var f=ev.target.files&&ev.target.files[0];if(!f)return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var inc=JSON.parse(rd.result);
+      if(!inc||typeof inc!=='object'||!inc.logs)throw 0;
+      DB.logs=Object.assign({},inc.logs,DB.logs);
+      DB.best=Object.assign({},inc.best||{},DB.best);
+      if(inc.start)DB.start=inc.start;
+      save();$('startIn').value=DB.start;renderToday();renderProgress();
+      toast('Backup restored');
+    }catch(e){ toast('That file is not a backup from this page'); }
+  };
+  rd.readAsText(f);ev.target.value='';
+});
+
+/* autosave — never lose an entry to a forgotten button */
+var au;
+document.addEventListener('input',function(ev){
+  if(ev.target.closest&&ev.target.closest('#p-today')){
+    clearTimeout(au);au=setTimeout(function(){collect();save(true);},900);
+  }
+});
+
+document.addEventListener('change',function(ev){
+  if(ev.target.closest&&ev.target.closest('#p-today')&&ev.target.type==='checkbox'){
+    collect();save(true);
+  }
+  if(ev.target.dataset&&ev.target.dataset.bm){
+    var v=parseFloat(ev.target.value);
+    if(!isNaN(v)){DB.best[ev.target.dataset.bm]=v;save();renderProgress();paintTimer();}
+  }
+});
+
+/* ---------------- autosave ---------------- */
+var saveTimer=null;
+function autosave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(function(){
+    collect();save();
+    var s=$('btnSave');
+    if(s){s.textContent='Saved automatically';
+      clearTimeout(s._x);s._x=setTimeout(function(){s.textContent='Save today';},1800);}
+  },600);
+}
+$('p-today').addEventListener('input',autosave);
+$('p-today').addEventListener('change',autosave);
+$('p-today').addEventListener('click',function(ev){
+  var t=ev.target;
+  if(t.type==='checkbox'||(t.dataset&&t.dataset.e))autosave();
+});
+window.addEventListener('pagehide',function(){collect();save();});
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='hidden'){collect();save();}
+});
+
+/* ---------------- boot ---------------- */
+(async function(){
+  await load();
+  $('startIn').value=DB.start;
+  holdOpts();paintTimer();renderToday();renderProgress();
+  stamp();
+})();
+
+})();
+</script>
